@@ -6,16 +6,23 @@ import kotlin.system.exitProcess
 
 fun main() {
     println("Please enter your birthday with the format <yyyy-MM-dd>")
-    supportNullableString(readLine()).takeUnless {
-        it.isNullOrEmpty() || it.isNullOrBlank()
-    }?.let{ line ->
-        val inputDate = LocalDate.parse(line).also{
-            println("You wrote $it")
+    supportNullableString(readLine()).takeIf {
+        !it.isNullOrEmpty() && !it.isNullOrBlank()
+//        .takeUnless {
+//        it.isNullOrEmpty() || it.isNullOrBlank()
+    }?.let {
+        LocalDate.parse(it)
+    }.apply {
+        if(this == null){
+            println("The date is not valid")
+            exitProcess(1)
         }
-        with(Period.between(inputDate, LocalDate.now())) {
+    }?.also{
+            println("You wrote $it")
+    }.run{
+        with(Period.between(this, LocalDate.now())) {
             println("The difference between the date you wrote and today is ${this.years}")
         }
-
     }
 
 }
