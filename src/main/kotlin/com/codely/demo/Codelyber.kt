@@ -19,12 +19,20 @@ fun main() {
         }
     }?.also{
             println("You wrote $it")
-    }.run{
-        with(Period.between(this, LocalDate.now())) {
-            println("The difference between the date you wrote and today is ${this.years}")
-        }
+    }?.run{
+        this.calculateDifference()
     }
 
 }
 
 fun supportNullableString(line: String?) = line
+
+// Extension function (Como las extensiones en Swift
+fun LocalDate.calculateDifference() = with(Period.between(this, LocalDate.now())) {
+    when {
+        // Podría no ponerse el; this, ya que lo infiere
+        this.years > 0 -> println("The difference between the date you wrote and today is ${this.years} years")
+        this.months > 0 -> println("The difference between the date you wrote and today is ${this.months} months")
+        this.days > 0 -> println("The difference between the date you wrote and today is ${this.days} days")
+    }
+}
