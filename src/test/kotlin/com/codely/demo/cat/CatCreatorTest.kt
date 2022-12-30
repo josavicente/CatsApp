@@ -16,7 +16,6 @@ internal class CatCreatorTest {
     private val name = "Mandarina"
     private val origin = "Shelter"
     private val vaccinated = "true"
-    private val dewormed = "true"
     private val birthDate = "2019-01-01"
     private val fixedDate = LocalDate.of(2021, 8, 31)
 
@@ -25,23 +24,25 @@ internal class CatCreatorTest {
         val reader = mockk<Reader>()
         val writer = mockk<Writer>(relaxed = true)
         val clock = mockk<Clock>()
+        val repository = InMemoryCatRepository()
         every { clock.now() } returns fixedDate
-        every { reader.read() } returns id andThen name andThen origin andThen vaccinated andThen dewormed andThen birthDate
+        every { reader.read() } returns id andThen name andThen origin andThen vaccinated andThen birthDate
 
-        val creator = CatCreator(reader, writer, clock)
-        val actualCat = creator.create()
+        val creator = CatCreator(reader, writer, clock, repository)
+        creator.create()
 
         val expectedCat = Cat(
             UUID.fromString(id),
             name,
             origin,
             vaccinated.toBoolean(),
-            dewormed.toBoolean(),
             LocalDate.parse(birthDate),
             fixedDate
         )
 
-        assertEquals(expectedCat, actualCat)
+        assertEquals(mapOf(
+            expectedCat.id to expectedCat
+        ), repository.findAll())
     }
 
     @Test
@@ -49,10 +50,11 @@ internal class CatCreatorTest {
         val reader = mockk<Reader>()
         val writer = mockk<Writer>(relaxed = true)
         val clock = mockk<Clock>()
+        val repository = InMemoryCatRepository()
         every { clock.now() } returns fixedDate
-        every { reader.read() } returns id andThen "" andThen origin andThen vaccinated andThen dewormed andThen birthDate
+        every { reader.read() } returns id andThen "" andThen origin andThen vaccinated andThen birthDate
 
-        val creator = CatCreator(reader, writer, clock)
+        val creator = CatCreator(reader, writer, clock, repository)
         assertThrows<IllegalArgumentException> { creator.create() }
     }
 
@@ -61,34 +63,37 @@ internal class CatCreatorTest {
         val reader = mockk<Reader>()
         val writer = mockk<Writer>(relaxed = true)
         val clock = mockk<Clock>()
+        val repository = InMemoryCatRepository()
         every { clock.now() } returns fixedDate
-        every { reader.read() } returns id andThen "  " andThen origin andThen vaccinated andThen dewormed andThen birthDate
+        every { reader.read() } returns id andThen "  " andThen origin andThen vaccinated andThen birthDate
 
-        val creator = CatCreator(reader, writer, clock)
+        val creator = CatCreator(reader, writer, clock, repository)
         assertThrows<IllegalArgumentException> { creator.create() }
     }
 
     @Test
-    fun `should fail creating a cat without origin`() {
+    fun `should fail creating a cat without shelter`() {
         val reader = mockk<Reader>()
         val writer = mockk<Writer>(relaxed = true)
         val clock = mockk<Clock>()
+        val repository = InMemoryCatRepository()
         every { clock.now() } returns fixedDate
-        every { reader.read() } returns id andThen name andThen "" andThen vaccinated andThen dewormed andThen birthDate
+        every { reader.read() } returns id andThen name andThen "" andThen vaccinated andThen birthDate
 
-        val creator = CatCreator(reader, writer, clock)
+        val creator = CatCreator(reader, writer, clock, repository)
         assertThrows<IllegalArgumentException> { creator.create() }
     }
 
     @Test
-    fun `should fail creating a cat with empty origin`() {
+    fun `should fail creating a cat with empty shelter`() {
         val reader = mockk<Reader>()
         val writer = mockk<Writer>(relaxed = true)
         val clock = mockk<Clock>()
+        val repository = InMemoryCatRepository()
         every { clock.now() } returns fixedDate
-        every { reader.read() } returns id andThen name andThen "  " andThen vaccinated andThen dewormed andThen birthDate
+        every { reader.read() } returns id andThen name andThen "  " andThen vaccinated andThen birthDate
 
-        val creator = CatCreator(reader, writer, clock)
+        val creator = CatCreator(reader, writer, clock, repository)
         assertThrows<IllegalArgumentException> { creator.create() }
     }
 }
