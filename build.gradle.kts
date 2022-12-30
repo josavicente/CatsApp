@@ -21,9 +21,10 @@ dependencies {
     implementation("com.diffplug.spotless:spotless-plugin-gradle:5.7.0")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("io.mockk:mockk:1.12.0")
 }
 application {
-    mainClass.set("com.codely.demo.CodelyberKt")
+    mainClass.set("com.codely.demo.mainKt")
 }
 
 tasks.withType<KotlinCompile> {
