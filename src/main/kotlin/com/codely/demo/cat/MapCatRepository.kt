@@ -1,14 +1,12 @@
 package com.codely.demo.cat
 
-import java.util.*
-
 class MapCatRepository() : CatRepository {
-    private var persistence: Map<UUID, Cat> = mapOf()
+    private var persistence: Map<Cat.Id, Cat> = mapOf()
 
     override fun save(cat: Cat) {
-        persistence.toMutableMap().apply{
+        persistence.toMutableMap().apply {
             this[cat.id] = cat
-            persistence.toMap()
+            persistence = toMap()
         }
     }
 }
