@@ -18,7 +18,9 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.diffplug.spotless:spotless-plugin-gradle:5.7.0")
+    implementation ("org.http4k:http4k-core:4.12.3.0")
+    implementation("org.json:json:20210307")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("io.mockk:mockk:1.12.0")
